@@ -17,17 +17,13 @@ import StationsList from './Stations';
 import Mouse from './Mouse';
 
 let graphics = Arc();
-let scales = Scales();
-let dispatch = Dispatch()
-	.on('updateTime', times => {
+let scales = Scales()
+	.on('mouseOver', times => {
 		let startTime = times.start;
 		let endTime = times.end;
+
 		console.log(startTime, endTime);
 	});
-
-dispatch();
-// let mouse = Mouse();
-
 
 // ** ------- DataLoader() ------- **
 let cf;
