@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 title-container">
+					<h1>Biker's footprints</h1>
+					<h5>This visual exploration of Boston's HubWay data reveals patterns in user's behavior</h5>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3">
+					<input id="start-station-input" placeholder="Start typing"></input>
+					<h6 class="input-label">Start station</h6>
+				</div>
+				<div class="col-lg-3">
+					<input id="end-station-input" placeholder="Start typing"></input>
+					<h6 class="input-label">End station</h6>
+				</div>
+				<div class="col-lg-4">
+					<div class="btn-group" role="group" aria-label="...">
+					  <button id="btn-all" type="button" class="btn btn-default">All day</button>
+					  <button id="btn-morning" type="button" class="btn btn-default">Morning</button>
+					  <button id="btn-evening" type="button" class="btn btn-default">Evening</button>
+					</div>
+					<h6 class="input-label">Time range</h6>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 graphics-container">
+					<canvas id="canvas"></canvas>
+					<div id="scales"></div>
+				</div>
+			</div>
+
+		<script src='./assets/bundle.js' type='text/javascript'></script>
+	</body>
+</html>
