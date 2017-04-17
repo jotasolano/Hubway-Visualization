@@ -100,7 +100,7 @@ function Scales(){
 
 				dis.call('mouseOver', null, { start: Math.floor(timeDist), end: Math.ceil(timeDist) });
 			});
-			}
+		}
 
 		exports.on = function(event, callback){
 			dis.on(event, callback);

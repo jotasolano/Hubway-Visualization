@@ -5,7 +5,6 @@ h1, h2, h3, h4, h5, h6, p{
 	color: #f2f2f2;
 }
 
-
 body{
 	background-color: #2B3238;
 }
@@ -44,10 +43,16 @@ input:focus{
   	color: #686868;
 }
 
-
 .input-label{
 	color: #8F8F8F;
 	margin-top: 5px;
+}
+
+.btn-group button{
+	background-color: #D401F3;
+	border: none;
+	border-radius: 0;
+	padding: 3px 12px;
 }
 
 .graphics-container{
@@ -69,18 +74,6 @@ input:focus{
   top: 0;
   left: 0;
 }
-
-/*#canvas{
-	border-style: solid;
-	border-width: 2px;
-	border-color: purple;
-}
-
-#scales{
-	border-style: solid;
-	border-width: 2px;
-	border-color: green;
-}*/
 
 .axis{
 	stroke: white;
