@@ -22,16 +22,12 @@ function Arc(){
 		// context.scale(2,2)
 
 		let c = 2*Math.PI*radius;
-
-		console.log('c', c); 
-
-
 		let arr = selection.datum()?selection.datum():[];
 
 
 		// ** ------- LAYOUT ------- **
 		let scaleAngle = d3.scaleTime()
-				.domain([0, 24])
+				.domain([0, 13])
 				.range([0, 2 * Math.PI]);
 
 		let arcGenerator = d3.arc()

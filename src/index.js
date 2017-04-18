@@ -42,51 +42,38 @@ d3.select('#btn-morning').on('click', function(d) {
 /************************************
 // ** ------- CONTROLLER --------- **
 ************************************/
-let controller = d3.map()
+let control = d3.map()
 
-controller.set('startStation', '');
-controller.set('endStation', '');
-controller.set('firstHour', 0);
-controller.set('lastHour', 12);
-
-console.log(controller);
+control.set('startStation', '');
+control.set('endStation', '');
+control.set('firstHour', 0);
+control.set('lastHour', 12);
 
 
-// function redraw(pars){
-// 	// if stateOfTheApp's time_range is set then filter data by the time range, if not filterdata = data
-// 	// filter filtreed data based on start/end stations
+//FIXIT THIS CONDITIONAL DOES NOT WORK (SEE CONSOLE LOG)
+function redraw(array){
+
+	// let filtered = array;
+	console.log(control.get('startStation'));
+
+	array.filter(function(d){
+		if(control.get('firstHour') == 0){
+			if (control.get('startStation') == ''){
+				return d.endStn === control.get('endStation') && d.startTime < 13;
+			} else if (control.get('endStation') == ''){
+				return d.startStn === control.get('startStation') && d.startTime < 13;
+			} else {
+			return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime < 13;
+			}
+		}
 
 
-// 	const array = pars.array;
-// 	const startStation = pars.startStation;
-// 	const endStation = pars.endStation;
-// 	const firstHour = pars.firstHour;
-// 	const lastHour = pars.lastHour;
+	})
+	console.log('control', array);
+	return array;
 
-
-// 	let filtered = array.filter(d => {
-// 		if (startStation == ''){
-// 			return d.endStn === endStation;
-// 		} else if (endStation == ''){
-// 			return d.startStn === startStation;
-// 		} else {
-// 		return d.startStn === startStation && d.endStn === endStation;
-// 		}
-// 	})
-
-// 	filtered = array.filter(d => {return d.startTime >= firstHour && d.endTime <= lastHour})
-
-// 	console.log('redraw:hours', filtered.length);
-
-
-// 	console.log('redraw:stations', filtered.length);
-// }
-
-
-function redraw(){
-	console.log(controller$startStation);
 }
-
+	
 
 /************************************
 // ** ------- DATA LOADER -------- **
@@ -100,51 +87,42 @@ let data = DataLoader()
 		let stationData = data.stations;
 
 		dis.on('timeUpdate', data => { 
-			let stat = controller.get('startStation')
-
-			// redraw({array: alltrips, firstHour: 0, lastHour: 12}); 
+			let stat = control.get('startStation')
 		})
 
 		let stationInputs = StationsList(stationData)
 			.on('stationTrig', inputVal => {
-				// redraw({array: alltrips, startStation: inputVal.startStation, endStation: inputVal.endStation});
-				controller.get('startStation');
+				control.set('startStation', inputVal.startStation);
+				control.set('endStation', inputVal.endStation);
+				control.set('firstHour', 0);
+				
+				// FIXIT: THIS LINE DOES NOT FILTER PROPERLY (SEE FUNCTION)
+				let filtered = redraw(alltrips);
 
-				redraw();
+				// FIXIT: THIS BLOCK DOES FILTER PROPPERLY
+				// let filtered = alltrips.filter(d => {
+				// 	if (inputVal.startStation == ''){
+				// 		return d.startTime < 13 && d.endStn === inputVal.endStation;
+				// 	} else if (inputVal.endStation == ''){
+				// 		return d.startTime < 13 && d.startStn === inputVal.startStation;
+				// 	} else {
+				// 	return d.startTime < 13 && d.startStn === inputVal.startStation && d.endStn === inputVal.endStation;
+				// 	}
+				// })
 
-				let filtered = alltrips.filter(d => {
-					if (inputVal.startStation == ''){
-						return d.endStn === inputVal.endStation;
-					} else if (inputVal.endStation == ''){
-						return d.startStn === inputVal.startStation;
-					} else {
-					return d.startStn === inputVal.startStation && d.endStn === inputVal.endStation;
-					}
-				})
 
-			filtered.forEach((d, i) => {d.lvl = i} );
 
-			
-
-			// redraw()
-			d3.select('#canvas').datum(filtered).call(graphics);
-
-			console.log('normal', filtered.length)
-		});
+				filtered.forEach((d, i) => {d.lvl = i} );
+				d3.select('#canvas').datum(filtered).call(graphics);
+			});
 
 		stationInputs();
 
-	// Filter data by any pair of stations -- CROSSFILTER NOT WORKING SEE BELOW --
+	// Initual drawing
 	let filtered = alltrips.filter(d => {
 		return d.startStn === 'University Park' && d.endStn === 'MIT at Mass Ave / Amherst St' ;
 	});
-
-	// setting the time of each trip to "today" + specified hour:min:sec from data
 	filtered.forEach((d, i) => {d.lvl = i} );
-
-	console.log(filtered);
-
-
 	d3.select('#canvas').datum(filtered).call(graphics);
 	d3.select('#scales').datum([0]).call(scales);
 
