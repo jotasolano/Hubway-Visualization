@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 let crossfilter = require('crossfilter'); //CommonJS
 let Awesomplete = require('awesomplete');
 let $ = require('jquery');
+let _ = require('lodash');
 
 import 'awesomplete/awesomplete.css';
 import 'bootstrap/dist/css/bootstrap.css'
@@ -52,27 +53,26 @@ control.set('lastHour', 12);
 
 //FIXIT THIS CONDITIONAL DOES NOT WORK (SEE CONSOLE LOG)
 function redraw(array){
+	let filtered = [];
 
-	// let filtered = array;
-	console.log(control.get('startStation'));
+	if(control.get('firstHour') == 0){
+		if (control.get('startStation') == ''){
+			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime < 12; })
+			console.log('empty start', filtered);
+			return filtered;
 
-	array.filter(function(d){
-		if(control.get('firstHour') == 0){
-			if (control.get('startStation') == ''){
-				return d.endStn === control.get('endStation') && d.startTime < 13;
-			} else if (control.get('endStation') == ''){
-				return d.startStn === control.get('startStation') && d.startTime < 13;
-			} else {
-			return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime < 13;
-			}
+		} else if (control.get('endStation') == ''){
+			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime < 12; })
+			console.log('empty end', filtered);
+			return filtered;
+			
+		} else {
+			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime < 12; })
+			console.log('both', filtered);
+			return filtered;
 		}
-
-
-	})
-	console.log('control', array);
-	return array;
-
-}
+	}
+} // -> end of redraw
 	
 
 /************************************
