@@ -48,12 +48,34 @@ input:focus{
 	margin-top: 5px;
 }
 
-.btn-group button{
-	background-color: #D401F3;
-	border: none;
-	border-radius: 0;
+
+
+.buttons-container button{
+	background-color: #2B3238;
+	border: 1px solid #D401F3;
+	border-radius: 0.2;
 	padding: 3px 12px;
+	color: #f2f2f2;
 }
+
+.buttons-container button:hover{
+	background-color: rgba(43, 135, 158, 0.2);
+	border: 1px solid #D401F3;
+	border-radius: 0.2;
+	padding: 3px 12px;
+	color: #f2f2f2;
+}
+
+
+.buttons-container button:focus{
+	background-color: rgba(212, 1, 243, 0.7);
+	border: 1px solid #D401F3;
+	border-radius: 0.2;
+	padding: 3px 12px;
+	color: #f2f2f2;
+	outline: 0;
+}
+
 
 .graphics-container{
 	width: 100%;
@@ -85,4 +107,18 @@ input:focus{
 	stroke: white;
 	opacity: 0.6;
 	stroke-width: 2px;
+}
+
+.hover-sections path {
+	fill: #2B879E;
+	fill-opacity: 0;
+}
+
+.hover-sections path:hover{
+	fill-opacity: 0.1;
+	transition: fill-opacity .2s ease-out;
+	-moz-transition: fill-opacity .2s ease-out;
+	-webkit-transition: fill-opacity .2s ease-out;
+	-o-transition: fill-opacity .2s ease-out;
+
 }

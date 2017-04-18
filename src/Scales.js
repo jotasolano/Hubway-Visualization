@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 function Scales(){
 	let W, H, M = {t:20,r:20,b:20,l:20};
 	const baseRadius = 60;
-	let timeRange = d3.range(1, 13, 1);
+	let _timeRange = d3.range(1, 13, 1);
 	let pieRange = d3.range(0, 12, 1);
 	let angle;
 	let dis = d3.dispatch('mouseOver');
@@ -75,7 +75,7 @@ function Scales(){
 			.attr('x2', radius)
 			.attr("transform", function(d) { return "rotate(" + -d + ")"; });
 
-		svgEnter.select('.time-labels').selectAll('g').data(timeRange)
+		svgEnter.select('.time-labels').selectAll('g').data(_timeRange)
 			.enter()
 			.append('g')
 			.attr('transform', 'translate(' + (W/2) + ',' + (H/2) + ') rotate('+-90+')')
@@ -89,8 +89,8 @@ function Scales(){
 			.enter()
 			.append('path')
 			.attr('d', function(d) { return arcGenerator(d); })
-			.style('fill', '#2B879E')
-			.style('fill-opacity', 0.1)
+			// .style('fill', '#2B879E')
+			// .style('fill-opacity', 0.1)
 			.attr('transform', 'translate(' + (W/2) + ',' + (H/2) + ') rotate('+0+')')
 			.on('mouseover', function(d) {
 				let coords = d3.mouse(this);				
@@ -106,8 +106,14 @@ function Scales(){
 			dis.on(event, callback);
 			return this;
 
+		}
 
-	};
+		exports.startTime = function(_){
+			if(!arguments.length) return _timeRange;
+			_timeRange = _;
+			return this;
+		}
+		
 	return exports;
 }
 

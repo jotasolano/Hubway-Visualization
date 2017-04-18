@@ -24,23 +24,35 @@ import Mouse from './Mouse';
 ************************************/
 
 let dis = d3.dispatch('timeUpdate', 'hourUpdate');
-let graphics = Arc();
+// let graphics = Arc();
 
-let graphicsMor = Arc().startTime(0).endTime(12);
+let graphicsMor = Arc()
+	.startTime(0)
+	.endTime(12);
 
-let graphicsEve = Arc().startTime(0).endTime(12);
+let graphicsEve = Arc()
+	.startTime(0)
+	.endTime(12);
 
-let scales = Scales()
+let scalesMor = Scales()
 	.on('mouseOver', times => {
 		let startTime = times.start;
 		let endTime = times.end;
 
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
 		console.log(startTime, endTime);
-	});
+	})
+	.startTime(d3.range(1, 13, 1));
 
+let scalesEve = Scales()
+	.on('mouseOver', times => {
+		let startTime = times.start;
+		let endTime = times.end;
 
-
+		dis.call('hourUpdate', null, {start: startTime, end: endTime });
+		console.log(startTime, endTime);
+	})
+	.startTime(d3.range(13, 25, 1));
 
 /************************************
 // ** ------- CONTROLLER --------- **
@@ -56,11 +68,13 @@ control.set('lastHour', 12);
 d3.select('#btn-morning').on('click', function(d) {
 	control.set('firstHour', 0)
 	dis.call('timeUpdate', null, {});
+	d3.select('#scales').datum([0]).call(scalesMor);
 })
 
 d3.select('#btn-evening').on('click', function(d) {
 	control.set('firstHour', 13)
 	dis.call('timeUpdate', null, {});
+	d3.select('#scales').datum([0]).call(scalesEve);
 })
 
 function redraw(array){
@@ -106,6 +120,7 @@ function redraw(array){
 
 		filtered.forEach((d, i) => {d.lvl = i} );
 		d3.select('#canvas').datum(filtered).call(graphicsEve);
+		d3.select('#scales').datum([0]).call(scalesEve);
 
 	}
 } // -> end of redraw
@@ -149,8 +164,8 @@ let data = DataLoader()
 		return d.startStn === 'University Park' && d.endStn === 'MIT at Mass Ave / Amherst St' ;
 	});
 	filtered.forEach((d, i) => {d.lvl = i} );
-	d3.select('#canvas').datum(filtered).call(graphics);
-	d3.select('#scales').datum([0]).call(scales);
+	d3.select('#canvas').datum(filtered).call(graphicsMor);
+	d3.select('#scales').datum([0]).call(scalesMor);
 
 	});
 
