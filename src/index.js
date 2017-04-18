@@ -26,6 +26,10 @@ import Mouse from './Mouse';
 let dis = d3.dispatch('timeUpdate', 'hourUpdate');
 let graphics = Arc();
 
+let graphicsMor = Arc().startTime(0).endTime(12);
+
+let graphicsEve = Arc().startTime(0).endTime(12);
+
 let scales = Scales()
 	.on('mouseOver', times => {
 		let startTime = times.start;
@@ -35,9 +39,7 @@ let scales = Scales()
 		console.log(startTime, endTime);
 	});
 
-d3.select('#btn-morning').on('click', function(d) {
-	dis.call('timeUpdate', null, {hourStart: 0, hourEnd: 12});
-})
+
 
 
 /************************************
@@ -51,7 +53,16 @@ control.set('firstHour', 0);
 control.set('lastHour', 12);
 
 
-//FIXIT THIS CONDITIONAL DOES NOT WORK (SEE CONSOLE LOG)
+d3.select('#btn-morning').on('click', function(d) {
+	control.set('firstHour', 0)
+	dis.call('timeUpdate', null, {});
+})
+
+d3.select('#btn-evening').on('click', function(d) {
+	control.set('firstHour', 13)
+	dis.call('timeUpdate', null, {});
+})
+
 function redraw(array){
 	let filtered = [];
 
@@ -59,18 +70,43 @@ function redraw(array){
 		if (control.get('startStation') == ''){
 			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime < 12; })
 			console.log('empty start', filtered);
-			return filtered;
+			// return filtered;
 
 		} else if (control.get('endStation') == ''){
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime < 12; })
 			console.log('empty end', filtered);
-			return filtered;
-			
+			// return filtered;
+
 		} else {
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime < 12; })
 			console.log('both', filtered);
-			return filtered;
+			// return filtered;
 		}
+
+		filtered.forEach((d, i) => {d.lvl = i} );
+		d3.select('#canvas').datum(filtered).call(graphicsMor);
+
+
+	} else {
+		if (control.get('startStation') == ''){
+			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime > 12; })
+			console.log('empty start', filtered);
+			// return filtered;
+
+		} else if (control.get('endStation') == ''){
+			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime > 12; })
+			console.log('empty end', filtered);
+			// return filtered;
+
+		} else {
+			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime > 12; })
+			console.log('both', filtered);
+			// return filtered;
+		}
+
+		filtered.forEach((d, i) => {d.lvl = i} );
+		d3.select('#canvas').datum(filtered).call(graphicsEve);
+
 	}
 } // -> end of redraw
 	
@@ -87,33 +123,23 @@ let data = DataLoader()
 		let stationData = data.stations;
 
 		dis.on('timeUpdate', data => { 
-			let stat = control.get('startStation')
+			// let filtered = redraw(alltrips);
+
+			redraw(alltrips);
+
+			// filtered.forEach((d, i) => {d.lvl = i} );
+			// d3.select('#canvas').datum(filtered).call(graphics);
 		})
 
 		let stationInputs = StationsList(stationData)
 			.on('stationTrig', inputVal => {
 				control.set('startStation', inputVal.startStation);
 				control.set('endStation', inputVal.endStation);
-				control.set('firstHour', 0);
-				
-				// FIXIT: THIS LINE DOES NOT FILTER PROPERLY (SEE FUNCTION)
-				let filtered = redraw(alltrips);
+				// let filtered = redraw(alltrips);
 
-				// FIXIT: THIS BLOCK DOES FILTER PROPPERLY
-				// let filtered = alltrips.filter(d => {
-				// 	if (inputVal.startStation == ''){
-				// 		return d.startTime < 13 && d.endStn === inputVal.endStation;
-				// 	} else if (inputVal.endStation == ''){
-				// 		return d.startTime < 13 && d.startStn === inputVal.startStation;
-				// 	} else {
-				// 	return d.startTime < 13 && d.startStn === inputVal.startStation && d.endStn === inputVal.endStation;
-				// 	}
-				// })
-
-
-
-				filtered.forEach((d, i) => {d.lvl = i} );
-				d3.select('#canvas').datum(filtered).call(graphics);
+				redraw(alltrips);
+				// filtered.forEach((d, i) => {d.lvl = i} );
+				// d3.select('#canvas').datum(filtered).call(graphics);
 			});
 
 		stationInputs();

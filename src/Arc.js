@@ -4,6 +4,8 @@ function Arc(){
 	let W, H, M ={t:20,r:20,b:20,l:20};
 	let dis = d3.dispatch('draw');
 	let scaleX, scaleY;
+	let _startTime = 0;
+	let _endTime = 12;
 	const baseRadius = 60;
 	const pixRatio = window.devicePixelRatio;
 	let canvas = document.querySelector("canvas"),
@@ -27,12 +29,12 @@ function Arc(){
 
 		// ** ------- LAYOUT ------- **
 		let scaleAngle = d3.scaleTime()
-				.domain([0, 13])
+				.domain([_startTime, _endTime])
 				.range([0, 2 * Math.PI]);
 
 		let arcGenerator = d3.arc()
 			.innerRadius(function(d) { return baseRadius + d.lvl; })
-			.outerRadius(function(d) { return baseRadius + d.lvl + 1; })
+			.outerRadius(function(d) { return baseRadius + d.lvl + 0.5; })
 			.startAngle(function(d) { return scaleAngle(d.startTime); })
 			.endAngle(function(d) { return scaleAngle(d.endTime); })
 			.context(context);
@@ -65,12 +67,22 @@ function Arc(){
 			  	context.closePath();
 			}
 		}
-	  	// context.strokeStyle = "rgba(0, 255, 0, 0.3)"
-	  	// context.stroke();
 	};
 
 	exports.on = function(event, callback){
 		dis.on(event, callback);
+		return this;
+	}
+
+	exports.startTime = function(_){
+		if(!arguments.length) return _startTime;
+		_startTime = _;
+		return this;
+	}
+
+	exports.endTime = function(_){
+		if(!arguments.length) return _endTime;
+		_endTime = _;
 		return this;
 	}
 
