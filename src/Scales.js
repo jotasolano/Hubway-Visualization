@@ -35,7 +35,7 @@ function Scales(){
 			.append('svg') //ENTER
 			.attr('width', W + M.l + M.r)
 			.attr('height', H + M.t + M.b)
-			
+			.merge(svg)
 
 		let plotEnter = svgEnter.append('g').attr('class','plot time-series')
 			.attr('transform','translate('+M.l+','+M.t+')');
@@ -75,22 +75,33 @@ function Scales(){
 			.attr('x2', radius)
 			.attr("transform", function(d) { return "rotate(" + -d + ")"; });
 
-		svgEnter.select('.time-labels').selectAll('g').data(_timeRange)
-			.enter()
-			.append('g')
+		let numbers = svgEnter.select('.time-labels').selectAll('g')
+			.data(_timeRange);
+
+		numbers = numbers.enter()
+			.append('g') //enter + update
 			.attr('transform', 'translate(' + (W/2) + ',' + (H/2) + ') rotate('+-90+')')
+			.merge(numbers) //Update
+			
+		let texts = numbers.selectAll("text")
+			.data(d=>[d]);
+		texts.enter()
 			.append('text')
+			.merge(texts)
 			.attr('x', radius)
-			.text(function(d, i) {return d; })
+			.text(function(d, i) { return d; })
 			.attr('fill', 'white')
 			.attr("transform", function(d) { return "rotate(" + 30*d + ")"; });
+
+		numbers.exit().remove() //exit
+
+		// console.log(numbers);
+
 
 		svgEnter.select('.hover-sections').selectAll('g').data(pieRange)
 			.enter()
 			.append('path')
 			.attr('d', function(d) { return arcGenerator(d); })
-			// .style('fill', '#2B879E')
-			// .style('fill-opacity', 0.1)
 			.attr('transform', 'translate(' + (W/2) + ',' + (H/2) + ') rotate('+0+')')
 			.on('mouseover', function(d) {
 				let coords = d3.mouse(this);				

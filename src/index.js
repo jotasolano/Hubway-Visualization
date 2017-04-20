@@ -34,6 +34,9 @@ let graphicsEve = Arc()
 	.startTime(0)
 	.endTime(12);
 
+let mor = d3.range(1, 13, 1);
+let eve = d3.range(13, 25, 1);
+
 let scalesMor = Scales()
 	.on('mouseOver', times => {
 		let startTime = times.start;
@@ -42,7 +45,7 @@ let scalesMor = Scales()
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
 		console.log(startTime, endTime);
 	})
-	.startTime(d3.range(1, 13, 1));
+	.startTime(mor);
 
 let scalesEve = Scales()
 	.on('mouseOver', times => {
@@ -52,7 +55,7 @@ let scalesEve = Scales()
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
 		console.log(startTime, endTime);
 	})
-	.startTime(d3.range(13, 25, 1));
+	.startTime(eve);
 
 /************************************
 // ** ------- CONTROLLER --------- **
@@ -68,13 +71,13 @@ control.set('lastHour', 12);
 d3.select('#btn-morning').on('click', function(d) {
 	control.set('firstHour', 0)
 	dis.call('timeUpdate', null, {});
-	d3.select('#scales').datum([0]).call(scalesMor);
+	d3.select('#scales').datum(mor).call(scalesMor);
 })
 
 d3.select('#btn-evening').on('click', function(d) {
 	control.set('firstHour', 13)
 	dis.call('timeUpdate', null, {});
-	d3.select('#scales').datum([0]).call(scalesEve);
+	d3.select('#scales').datum(eve).call(scalesEve);
 })
 
 function redraw(array){
@@ -83,44 +86,40 @@ function redraw(array){
 	if(control.get('firstHour') == 0){
 		if (control.get('startStation') == ''){
 			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime < 12; })
-			console.log('empty start', filtered);
 			// return filtered;
 
 		} else if (control.get('endStation') == ''){
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime < 12; })
-			console.log('empty end', filtered);
 			// return filtered;
 
 		} else {
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime < 12; })
-			console.log('both', filtered);
 			// return filtered;
 		}
 
-		filtered.forEach((d, i) => {d.lvl = i} );
+		filtered.forEach((d, i) => {d.lvl = i, d.hour = Math.floor(d.startTime)} );
 		d3.select('#canvas').datum(filtered).call(graphicsMor);
+		d3.select('#scales').datum(mor).call(scalesMor);
 
 
 	} else {
 		if (control.get('startStation') == ''){
 			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime > 12; })
-			console.log('empty start', filtered);
 			// return filtered;
 
 		} else if (control.get('endStation') == ''){
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime > 12; })
-			console.log('empty end', filtered);
 			// return filtered;
 
 		} else {
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime > 12; })
-			console.log('both', filtered);
+			
 			// return filtered;
 		}
 
-		filtered.forEach((d, i) => {d.lvl = i} );
+		filtered.forEach((d, i) => {d.lvl = i, d.hour = Math.floor(d.startTime)} );
 		d3.select('#canvas').datum(filtered).call(graphicsEve);
-		d3.select('#scales').datum([0]).call(scalesEve);
+		d3.select('#scales').datum(eve).call(scalesEve);
 
 	}
 } // -> end of redraw
@@ -158,14 +157,15 @@ let data = DataLoader()
 			});
 
 		stationInputs();
+		redraw(alltrips)
 
 	// Initual drawing
-	let filtered = alltrips.filter(d => {
-		return d.startStn === 'University Park' && d.endStn === 'MIT at Mass Ave / Amherst St' ;
-	});
-	filtered.forEach((d, i) => {d.lvl = i} );
-	d3.select('#canvas').datum(filtered).call(graphicsMor);
-	d3.select('#scales').datum([0]).call(scalesMor);
+	// let filtered = alltrips.filter(d => {
+	// 	return d.startStn === 'University Park' && d.endStn === 'MIT at Mass Ave / Amherst St' ;
+	// });
+	// filtered.forEach((d, i) => {d.lvl = i} );
+	// d3.select('#canvas').datum(filtered).call(graphicsMor);
+	// d3.select('#scales').datum([0]).call(scalesMor);
 
 	});
 
