@@ -16,19 +16,23 @@ import DataLoader from './data';
 import Arc from './Arc';
 import Scales from './Scales';
 import StationsList from './Stations';
-import Mouse from './Mouse';
-
+import totalTrips from './totalTrips';
 
 /************************************
 // ** ------- INIT --------------- **
 ************************************/
 
-let dis = d3.dispatch('timeUpdate', 'hourUpdate');
-// let graphics = Arc();
+let dis = d3.dispatch('timeUpdate', 'hourUpdate', 'showCount', 'test');
+let total = totalTrips();
 
 let graphicsMor = Arc()
 	.startTime(0)
-	.endTime(12);
+	.endTime(12)
+	.on('countTrips', d => {
+		// scalesMor
+		dis.call('showCount', null, d);
+		console.log('this is the data', d)
+	});
 
 let graphicsEve = Arc()
 	.startTime(0)
@@ -43,9 +47,9 @@ let scalesMor = Scales()
 		let endTime = times.end;
 
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
-		console.log(startTime, endTime);
+		// console.log(startTime, endTime);
 	})
-	.startTime(mor);
+	.startTime(mor)
 
 let scalesEve = Scales()
 	.on('mouseOver', times => {
@@ -53,7 +57,7 @@ let scalesEve = Scales()
 		let endTime = times.end;
 
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
-		console.log(startTime, endTime);
+		// console.log(startTime, endTime);
 	})
 	.startTime(eve);
 
@@ -82,6 +86,7 @@ d3.select('#btn-evening').on('click', function(d) {
 
 function redraw(array){
 	let filtered = [];
+	let numTrips;
 
 	if(control.get('firstHour') == 0){
 		if (control.get('startStation') == ''){
@@ -100,6 +105,18 @@ function redraw(array){
 		filtered.forEach((d, i) => {d.lvl = i, d.hour = Math.floor(d.startTime)} );
 		d3.select('#canvas').datum(filtered).call(graphicsMor);
 		d3.select('#scales').datum(mor).call(scalesMor);
+
+		dis.on('hourUpdate', d => {
+			let startHour = d.start;
+			let endHour = d.end;
+			numTrips = _.filter(filtered, function(d) { return d.startTime >= startHour && d.startTime <= endHour; })
+
+			console.log(numTrips);
+
+			d3.select('#canvas').datum(numTrips).call(total);
+
+			console.log('a hover has been made', d); 
+		});
 
 
 	} else {

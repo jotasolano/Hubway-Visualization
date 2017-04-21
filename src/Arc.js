@@ -2,14 +2,16 @@ import * as d3 from 'd3';
 
 function Arc(){
 	let W, H, M ={t:20,r:20,b:20,l:20};
-	let dis = d3.dispatch('draw');
+	let dis = d3.dispatch('countTrips');
 	let scaleX, scaleY, maxSum;
 	let _startTime = 0;
 	let _endTime = 12;
+	let start = null;
 	const baseRadius = 60;
 	const pixRatio = window.devicePixelRatio;
 	let canvas = document.querySelector("canvas"),
 	context = canvas.getContext("2d");
+	let raf = window.requestAnimationFrame;
 
 
 	function exports(selection){
@@ -31,13 +33,10 @@ function Arc(){
 			.rollup(function(trips) { return trips.length; })
 			.entries(arr)
 
-		nestedHours.sort(function(a, b){return +a.key - +b.key})
+		nestedHours.sort(function(a, b){return +a.key - +b.key});
+		dis.call('countTrips', null, nestedHours);
 
-
-		console.log(nestedHours);
-
-		maxSum = d3.max(nestedHours, function(d) { return d.value; })
-
+		maxSum = d3.max(nestedHours, function(d) { return d.value; });
 
 		// ** ------- LAYOUT ------- **
 		let scaleAngle = d3.scaleTime()
@@ -68,15 +67,7 @@ function Arc(){
 		// ** ------- CANVAS LINES ------- **
 		context.translate(canvas.width/2, canvas.height/2);
 
-		var gr = context.createRadialGradient(50,50,25,100,100,100);
-
-	    // Add the color stops.
-	    gr.addColorStop(0,'rgb(255,0,0)');
-	    gr.addColorStop(.5,'rgb(0,255,0)');
-	    gr.addColorStop(1,'rgb(255,0,0)');
-
-
-		for (var i = 0; i < arr.length; i++) {
+		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].userType == 'Subscriber') {
 				context.beginPath();
 				arcGenerator(arr[i]);
@@ -91,6 +82,35 @@ function Arc(){
 			  	context.closePath();
 			}
 		}
+
+		// function animateArcs(drawTo){
+		// 	context.clearRect(0, 0, canvas.width, canvas.height);
+
+		// 	requestAnimationFrame(function(){
+		// 		animateArcs()
+		// 	});
+
+		// 	for (let i = 0; i < arr.length; i++) {
+		// 		// arcGenerator.endAngle(function(d) { return scaleAngle(d.endTime); })
+
+
+		// 		if (arr[i].userType == 'Subscriber') {
+		// 			context.beginPath();
+		// 			arcGenerator(arr[i]);
+		// 			context.strokeStyle = "rgba(212, 1, 243, 1)";
+		// 		  	context.stroke();
+		// 		  	context.closePath();
+		// 		} else {
+		// 			context.beginPath();
+		// 			arcGenerator(arr[i]);
+		// 			context.strokeStyle = "rgba(0, 187, 251, 1)";
+		// 		  	context.stroke();
+		// 		  	context.closePath();
+		// 		}
+		// 	}
+		// }
+
+		// animateArcs();
 
 		context.beginPath();
 		lineGenerator(nestedHours);
@@ -116,8 +136,6 @@ function Arc(){
 		_endTime = _;
 		return this;
 	}
-
-
 	return exports;
 }
 

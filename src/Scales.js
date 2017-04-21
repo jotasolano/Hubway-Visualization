@@ -7,9 +7,9 @@ function Scales(){
 	let pieRange = d3.range(0, 12, 1);
 	let angle;
 	let dis = d3.dispatch('mouseOver');
+	let _hourCount = undefined;
 
 	function exports(selection){
-
 		W = W || selection.node().clientWidth - M.l - M.r;
 		H = H || selection.node().clientHeight - M.t - M.b;
 		const radius = Math.min(W, H) / 2 - 150; //how far out do the axes go
@@ -122,6 +122,12 @@ function Scales(){
 		exports.startTime = function(_){
 			if(!arguments.length) return _timeRange;
 			_timeRange = _;
+			return this;
+		}
+
+		exports.hourCount = function(_){
+			if(!arguments.length) return _hourCount;
+			_hourCount = _;
 			return this;
 		}
 		
