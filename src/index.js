@@ -16,14 +16,12 @@ import DataLoader from './data';
 import Arc from './Arc';
 import Scales from './Scales';
 import StationsList from './Stations';
-import totalTrips from './totalTrips';
 
 /************************************
 // ** ------- INIT --------------- **
 ************************************/
 
 let dis = d3.dispatch('timeUpdate', 'hourUpdate', 'showCount', 'test');
-let total = totalTrips();
 
 let graphicsMor = Arc()
 	.startTime(0)
@@ -47,7 +45,6 @@ let scalesMor = Scales()
 		let endTime = times.end;
 
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
-		// console.log(startTime, endTime);
 	})
 	.startTime(mor)
 
@@ -57,7 +54,6 @@ let scalesEve = Scales()
 		let endTime = times.end;
 
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
-		// console.log(startTime, endTime);
 	})
 	.startTime(eve);
 
@@ -91,15 +87,12 @@ function redraw(array){
 	if(control.get('firstHour') == 0){
 		if (control.get('startStation') == ''){
 			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime < 12; })
-			// return filtered;
 
 		} else if (control.get('endStation') == ''){
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime < 12; })
-			// return filtered;
 
 		} else {
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime < 12; })
-			// return filtered;
 		}
 
 		filtered.forEach((d, i) => {d.lvl = i, d.hour = Math.floor(d.startTime)} );
@@ -110,33 +103,36 @@ function redraw(array){
 			let startHour = d.start;
 			let endHour = d.end;
 			numTrips = _.filter(filtered, function(d) { return d.startTime >= startHour && d.startTime <= endHour; })
-
-			console.log(numTrips);
-
-			d3.select('#canvas').datum(numTrips).call(total);
-
-			console.log('a hover has been made', d); 
+			let disc = d3.select("#numbersUpdate")
+			disc.select("text").html("")
+			disc.select("text").html(numTrips.length + ' trips')
 		});
 
 
 	} else {
 		if (control.get('startStation') == ''){
 			filtered = _.filter(array, function(d) { return d.endStn === control.get('endStation') && d.startTime > 12; })
-			// return filtered;
 
 		} else if (control.get('endStation') == ''){
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.startTime > 12; })
-			// return filtered;
 
 		} else {
 			filtered = _.filter(array, function(d) { return d.startStn === control.get('startStation') && d.endStn === control.get('endStation') && d.startTime > 12; })
 			
-			// return filtered;
 		}
 
 		filtered.forEach((d, i) => {d.lvl = i, d.hour = Math.floor(d.startTime)} );
 		d3.select('#canvas').datum(filtered).call(graphicsEve);
 		d3.select('#scales').datum(eve).call(scalesEve);
+
+		dis.on('hourUpdate', d => {
+			let startHour = d.start;
+			let endHour = d.end;
+			numTrips = _.filter(filtered, function(d) { return d.startTime >= startHour && d.startTime <= endHour; })
+			let disc = d3.select("#numbersUpdate")
+			disc.select("text").html("")
+			disc.select("text").html(numTrips.length + ' trips')
+		});
 
 	}
 } // -> end of redraw

@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 function Scales(){
 	let W, H, M = {t:20,r:20,b:20,l:20};
-	const baseRadius = 60;
+	const baseRadius = 50;
 	let _timeRange = d3.range(1, 13, 1);
 	let pieRange = d3.range(0, 12, 1);
 	let angle;
@@ -39,29 +39,31 @@ function Scales(){
 
 		let plotEnter = svgEnter.append('g').attr('class','plot time-series')
 			.attr('transform','translate('+M.l+','+M.t+')');
-
-		let time = d3.timeFormat('%H')
 		
-		plotEnter.append('circle').attr('class', 'disc');
+		let circG = plotEnter.append("g").attr("id", "numbersUpdate")
+		circG.append('circle').attr('class', 'disc')
+		circG.append("text").text("").attr('text-anchor', 'middle');
+
 		plotEnter.append('g').attr('class', 'hover-sections')
 		plotEnter.append('g').attr('class', 'axis');
 		plotEnter.append('g').attr('class', 'sm-axis');
 		plotEnter.append('g').attr('class', 'time-labels');
 
+
+		circG.attr('transform','translate('+ (W / 2) + "," + (H / 2) + ') rotate('+0+')')
 		selection.selectAll('.disc').data([0])
-			.attr('transform','translate('+ (W / 2) + "," + (H / 2) + ') rotate('+0+')')
 		    .attr('cx', 0)
 		    .attr('cy', 0)
 		    .attr('r', baseRadius)
-		    .style('fill', 'white')
-		    .style('opacity', 0.4);
+		    .style('fill', '#f2f2f2')
+		    .style('opacity', 0.8);
 
 		svgEnter.select('.axis').selectAll("g").data(d3.range(0, 360, 30))
 			.enter()
 			.append('g')
 			.attr('transform', 'translate(' + (W/2) + ',' + (H/2) + ')')
 			.append('line')
-			.attr('x1', baseRadius)
+			.attr('x1', 0)
 			.attr('x2', radius)
     		// .style('stroke-width', 0.5)
 			.attr("transform", function(d) { return "rotate(" + -d + ")"; });

@@ -22,22 +22,21 @@ function totalTrips(){
 
 		let plotEnter = svgEnter.append('g').attr('class','plot time-series')
 			.attr('transform','translate('+M.l+','+M.t+')');
+
+		plotEnter.append('g').attr('class', 'label');
 		
-		plotEnter.append('text').attr('class', 'counter-label');
-
-
-		let numbers = svgEnter.select('.counter-label').selectAll('text')
-			.data([arr.length]);
-
-		numbers = numbers.enter()
-			.append('text') //enter + update
+		svgEnter.select('.label').selectAll("g").data(arr)
+			.enter()
+			.append('text')
 			.attr('transform', 'translate(' + (W/2) + ',' + (H/2) + ') rotate('+0+')')
-			.merge(numbers) //Update
+			.merge(plotEnter) //Update
 			.attr('x', 45)
-			.text(function(d, i) { console.log(d); return d; })
+			.attr('y', 60)
+			.attr("dy", ".35em")
+			.text(function(d, i) { console.log(d.length); return d.length; })
 			.attr('fill', 'white')
 
-		numbers.exit().remove() //exit
+		plotEnter.exit().remove() //exit
 		}
 	
 	return exports;

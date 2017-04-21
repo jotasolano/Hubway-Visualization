@@ -122,3 +122,7 @@ input:focus{
 	-o-transition: fill-opacity .2s ease-out;
 
 }
+
+#numbersUpdate{
+	font-family: 'Roboto', sans-serif;
+}

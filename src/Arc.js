@@ -7,7 +7,7 @@ function Arc(){
 	let _startTime = 0;
 	let _endTime = 12;
 	let start = null;
-	const baseRadius = 60;
+	const baseRadius = 50;
 	const pixRatio = window.devicePixelRatio;
 	let canvas = document.querySelector("canvas"),
 	context = canvas.getContext("2d");
