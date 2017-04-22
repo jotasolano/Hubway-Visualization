@@ -46,7 +46,7 @@ let scalesMor = Scales()
 
 		dis.call('hourUpdate', null, {start: startTime, end: endTime });
 	})
-	.startTime(mor)
+	.startTime(mor);
 
 let scalesEve = Scales()
 	.on('mouseOver', times => {
@@ -128,6 +128,8 @@ function redraw(array){
 		dis.on('hourUpdate', d => {
 			let startHour = d.start;
 			let endHour = d.end;
+
+			console.log(startHour, endHour);
 			numTrips = _.filter(filtered, function(d) { return d.startTime >= startHour && d.startTime <= endHour; })
 			let disc = d3.select("#numbersUpdate")
 			disc.select("text").html("")
