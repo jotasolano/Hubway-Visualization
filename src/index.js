@@ -29,7 +29,7 @@ let graphicsMor = Arc()
 	.on('countTrips', d => {
 		// scalesMor
 		dis.call('showCount', null, d);
-		console.log('this is the data', d)
+		// console.log('this is the data', d)
 	});
 
 let graphicsEve = Arc()
@@ -129,7 +129,7 @@ function redraw(array){
 			let startHour = d.start;
 			let endHour = d.end;
 
-			console.log(startHour, endHour);
+			// console.log(startHour, endHour);
 			numTrips = _.filter(filtered, function(d) { return d.startTime >= startHour && d.startTime <= endHour; })
 			let disc = d3.select("#numbersUpdate")
 			disc.select("text").html("")

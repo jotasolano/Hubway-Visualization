@@ -77,6 +77,10 @@ input:focus{
 }
 
 
+.graphic-key{
+	margin-top: 30px;
+}
+
 .graphics-container{
 	width: 100%;
 	height: 1200px;

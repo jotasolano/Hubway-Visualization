@@ -112,12 +112,12 @@ function Arc(){
 
 		// animateArcs();
 
-		context.beginPath();
-		lineGenerator(nestedHours);
-		context.strokeStyle = '#00aa99';
-		context.lineWidth = 2;
-		context.stroke();
-		context.closePath();
+		// context.beginPath();
+		// lineGenerator(nestedHours);
+		// context.strokeStyle = '#00aa99';
+		// context.lineWidth = 2;
+		// context.stroke();
+		// context.closePath();
 	};
 
 	exports.on = function(event, callback){
